@@ -164,7 +164,7 @@ class ComicReader {
                 this.pageInfo.style.transition = 'opacity 1s ease-in-out';
                 setTimeout(() => {
                     this.pageInfo.style.opacity = 0;
-                }, 5000);
+                }, 3000);
             })
         } else {
             this.pageInfo.textContent = this.loading ? 'Loading...' : 'No comic loaded';
