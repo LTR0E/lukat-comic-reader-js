@@ -28,6 +28,7 @@ class ComicReader {
         this.nextButton = document.getElementById('nextButton');
         this.pageDisplay = document.getElementById('pageDisplay');
         this.pageInfo = document.getElementById('pageInfo');
+        
 
         this.setupEventListeners();
     }
@@ -161,10 +162,11 @@ class ComicReader {
             setTimeout(() => {
                 this.pageInfo.textContent = `Page ${currentPage.pageNum} - ${currentPage.filename}`;
                 this.pageInfo.style.opacity = 1;
-                this.pageInfo.style.transition = 'opacity 1s ease-in-out';
+                this.pageInfo.style.transition = 'none';
                 setTimeout(() => {
                     this.pageInfo.style.opacity = 0;
-                }, 3000);
+                    this.pageInfo.style.transition = 'opacity 1s ease-out';
+                }, 4000);
             })
         } else {
             this.pageInfo.textContent = this.loading ? 'Loading...' : 'No comic loaded';
