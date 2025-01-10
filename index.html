@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Comic Book Reader</title>
+</head>
+
+<body>
+    <div class="container">
+        <div id="errorMessage"></div>
+        <div class="controls">
+            <input type="file" id="fileInput" accept=".cbr,.cbz">
+            <div id="navigation">
+                <button id="prevButton" disabled>Previous</button>
+                <button id="nextButton" disabled>Next</button>
+            </div>
+        </div>
+        <div class="reader">
+            <img id="pageDisplay" alt="Comic page">
+            <div class="page-info" id="pageInfo"></div>
+        </div>
+    </div>
+
+    <!-- Load dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/libarchive.js/dist/worker-bundle.js"></script>
+    <script src="https://xenova.github.io/unarchiver.js/dist/unarchiver.min.js"></script>
+    <script src="script.js"></script>
+    
+</body>
+</html>
