@@ -157,7 +157,15 @@ class ComicReader {
     updatePageInfo() {
         if (this.pages.length > 0) {
             const currentPage = this.pages[this.currentPage];
-            this.pageInfo.textContent = `Page ${this.currentPage + 1} of ${this.pages.length} (${currentPage.filename})`;
+            // Display the current page number and filename and fade out after 5 seconds
+            setTimeout(() => {
+                this.pageInfo.textContent = `Page ${currentPage.pageNum} - ${currentPage.filename}`;
+                this.pageInfo.style.opacity = 1;
+                this.pageInfo.style.transition = 'opacity 1s ease-in-out';
+                setTimeout(() => {
+                    this.pageInfo.style.opacity = 0;
+                }, 5000);
+            })
         } else {
             this.pageInfo.textContent = this.loading ? 'Loading...' : 'No comic loaded';
         }
