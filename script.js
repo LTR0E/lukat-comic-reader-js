@@ -158,7 +158,7 @@ class ComicReader {
     updatePageInfo() {
         if (this.pages.length > 0) {
             const currentPage = this.pages[this.currentPage];
-            // Display the current page number and filename and fade out after 5 seconds
+            // Display the current page number and filename and fade out after 4 seconds
             setTimeout(() => {
                 this.pageInfo.textContent = `Page ${currentPage.pageNum} - ${currentPage.filename}`;
                 this.pageInfo.style.opacity = 1;

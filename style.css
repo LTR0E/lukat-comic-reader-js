@@ -102,14 +102,15 @@ button:disabled {
 input[type=file]::file-selector-button {
     border: none;
     border-radius: 10px;
+    background-image: -webkit-linear-gradient(top, #007bff, #0056b3);
     padding: 10px 20px;
-    background-color: #007bff;
     color: white;
     cursor: pointer;
     transition: background 0.3s;
 }
 
 input[type=file]::file-selector-button:hover {
-    background-color: #0056b3;
+    background-image: -webkit-linear-gradient(top,#036ad8, #004792);
+
 }
 
