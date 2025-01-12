@@ -54,7 +54,9 @@ class ComicReader {
                 throw new Error('Unarchiver library not loaded');
             }
 
+
             const archive = await Unarchiver.open(file);
+
             const pageEntries = [];
 
             // First, collect all valid image entries with their filenames
