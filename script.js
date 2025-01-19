@@ -28,7 +28,7 @@ class ComicReader {
         this.nextButton = document.getElementById('nextButton');
         this.pageDisplay = document.getElementById('pageDisplay');
         this.pageInfo = document.getElementById('pageInfo');
-        
+        this.fullscreenButton = document.getElementById('fullscreenButton');
 
         this.setupEventListeners();
     }
@@ -37,7 +37,16 @@ class ComicReader {
         this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
         this.prevButton.addEventListener('click', () => this.previousPage());
         this.nextButton.addEventListener('click', () => this.nextPage());
+        this.fullscreenButton.addEventListener('click', () => this.toggleFullScreen());
         document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+    }
+    
+    toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
     }
 
     async handleFileSelect(event) {
