@@ -111,3 +111,17 @@ input[type=file]::file-selector-button {
 input[type=file]::file-selector-button:hover {
     background-image: -webkit-linear-gradient(top,#036ad8, #004792);
 }
+
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}

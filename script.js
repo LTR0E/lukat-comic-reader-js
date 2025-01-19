@@ -45,6 +45,7 @@ class ComicReader {
         if (!file) return;
 
         document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('loader').style.display = 'flex'; // Show loader
 
         this.loading = true;
         this.updateUI();
@@ -82,28 +83,35 @@ class ComicReader {
 
             // Now read the files in the correct order
             this.pages = [];
+            let loadedCount = 0;
             for (const pageEntry of pageEntries) {
                 const entryFile = await pageEntry.entry.read();
                 const url = URL.createObjectURL(entryFile);
-                this.pages.push({
-                    url: url,
-                    filename: pageEntry.filename,
-                    pageNum: pageEntry.pageNum
-                });
+                this.pages.push({ url, filename: pageEntry.filename, pageNum: pageEntry.pageNum });
+                loadedCount++;
+                document.getElementById('progressInfo').textContent =
+                    `Loaded ${loadedCount} of ${pageEntries.length} pages...`;
+                // Let the UI update after each page
+                await new Promise(r => setTimeout(r, 0));
             }
 
             if (this.pages.length === 0) {
                 throw new Error('No valid images found in the archive');
             }
-
+            
+            document.getElementById('loader').style.display = 'none'; // Hide loader
+            this.loading = false;
             this.currentPage = 0;
             this.updateUI();
             this.displayCurrentPage();
         } catch (error) {
             console.error('Error reading comic file:', error);
             showError(`Error reading comic file: ${error.message}`);
+            document.getElementById('loader').style.display = 'none';
             this.pages = [];
             this.currentPage = 0;
+            this.loading = false;
+            this.updateUI();
         } finally {
             this.loading = false;
             this.updateUI();
