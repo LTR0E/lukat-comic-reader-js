@@ -125,3 +125,32 @@ input[type=file]::file-selector-button:hover {
     align-items: center;
     z-index: 999;
 }
+
+.prevButton, .nextButton {
+    position: absolute;
+    top: 0;
+    width: 20%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.prevButton:hover, .nextButton:hover {
+    opacity: 0.4;
+}
+
+.prevButton {
+    left: 0;
+}
+
+.nextButton {
+    right: 0;
+}
+
+@media (max-width: 600px) {
+    .prevButton, .nextButton {
+        width: 30%;
+    }
+}

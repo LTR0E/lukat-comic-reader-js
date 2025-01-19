@@ -24,8 +24,8 @@ class ComicReader {
         this.loading = false;
 
         this.fileInput = document.getElementById('fileInput');
-        this.prevButton = document.getElementById('prevButton');
-        this.nextButton = document.getElementById('nextButton');
+        this.prevButton = document.querySelector('.prevButton');
+        this.nextButton = document.querySelector('.nextButton');
         this.pageDisplay = document.getElementById('pageDisplay');
         this.pageInfo = document.getElementById('pageInfo');
         this.fullscreenButton = document.getElementById('fullscreenButton');

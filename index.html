@@ -14,14 +14,16 @@
         <div class="controls">
             <input type="file" id="fileInput" accept=".cbr,.cbz">
             <div id="navigation">
-                <button id="prevButton" disabled>Previous</button>
-                <button id="nextButton" disabled>Next</button>
+                
+                
             </div>
-            <button id="fullscreenButton">Toggle Full Screen</button>
+            <button id="fullscreenButton"><img src="images/expand.png" width="24" height="24" style="filter: invert(1);"></button>
         </div>
         <div class="reader">
+            <button class="prevButton" disabled>Previous</button>
             <img id="pageDisplay" alt="Comic page">
-
+            <button class="nextButton" disabled>Next</button>
+            
             <div class="page-info" id="pageInfo"></div>
         </div>
 
