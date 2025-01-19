@@ -60,12 +60,13 @@ button:disabled {
     position: relative;
     width: 100%;
     height: 80vh;
-    overflow: hidden;
+    overflow: auto;
     display: flex;
     justify-content: center;
     align-items: center;
     background: #333;
     border-radius: 4px;
+    touch-action: pinch-zoom;
 }
 
 /* Hide everything except .reader when in fullscreen */
