@@ -42,8 +42,9 @@ class ComicReader {
     }
     
     toggleFullScreen() {
+        const readerElement = document.querySelector('.reader');
         if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
+            readerElement.requestFullscreen();
         } else {
             document.exitFullscreen();
         }
