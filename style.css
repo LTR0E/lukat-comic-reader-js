@@ -66,7 +66,6 @@ button:disabled {
     align-items: center;
     background: #333;
     border-radius: 4px;
-    touch-action: pinch-zoom;
 }
 
 /* Hide everything except .reader when in fullscreen */
