@@ -29,16 +29,20 @@
             </div>
 
             <button id="fullscreenButton"><img src="images/expand.png" width="24" height="24" style="filter: invert(1);"></button>
-            <p id="progress-text" style="color: white;">0%</p>
-            <progress id="readProgress" value="0" max="100"></progress>
+
         </div>
 
         <div class="reader">
             <button class="prevButton"></button>
             <img id="pageDisplay" alt="Comic page">
             <button class="nextButton"></button>
-            
+
             <div class="page-info" id="pageInfo"></div>
+
+            <div id="progress-container">
+                <p id="progress-text" style="color: white;">0%</p>
+                <progress id="readProgress" value="0" max="100"></progress>
+            </div>
         </div>
 
         <div id="loader" class="loading-screen" style="display: none;">

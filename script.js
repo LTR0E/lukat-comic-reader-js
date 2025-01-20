@@ -22,8 +22,11 @@ class ComicReader {
         this.currentPage = 0;
         this.pages = [];
         this.loading = false;
+        this.fullscreen = false;
         this.readingDirection = 'ltr'; // Left-to-right by default
-
+        this.hideProgressTimeout = null;
+        this.showProgressTimeout = null;
+        
         this.fileInput = document.getElementById('fileInput');
         this.prevButton = document.querySelector('.prevButton');
         this.nextButton = document.querySelector('.nextButton');
@@ -51,14 +54,63 @@ class ComicReader {
         this.readingDirectionSelect.addEventListener('change', (e) => {
             this.readingDirection = e.target.value;
         });
+
+        document.addEventListener('fullscreenchange', () => {
+            // Clear any previous timeout
+            clearTimeout(this.hideProgressTimeout);
+    
+            if (document.fullscreenElement) {
+                this.hideProgressTimeout = setTimeout(() => {
+                    document.getElementById('readProgress').style.display = 'none';
+                    document.getElementById('progress-text').style.display = 'none';
+                }, 2000);
+            } else {
+                // Show the progress bar when exiting fullscreen
+                document.getElementById('readProgress').style.display = 'block';
+                document.getElementById('progress-text').style.display = 'block';
+            }
+        });
+
+        // Show progress elements briefly when changing pages
+        const showProgressBriefly = () => {
+            if (document.fullscreenElement) {
+                clearTimeout(this.showProgressTimeout);
+                
+                document.getElementById('readProgress').style.display = 'block';
+                document.getElementById('progress-text').style.display = 'block';
+                
+                this.showProgressTimeout = setTimeout(() => {
+                    document.getElementById('readProgress').style.display = 'none';
+                    document.getElementById('progress-text').style.display = 'none';
+                }, 2000);
+            }
+        };
+
+        this.prevButton.addEventListener('click', showProgressBriefly);
+        this.nextButton.addEventListener('click', showProgressBriefly);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                showProgressBriefly();
+            }
+        });
+
+        this.prevButton.addEventListener('click', showProgressBriefly);
+        this.nextButton.addEventListener('click', showProgressBriefly);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            showProgressBriefly();
+            }
+        });
     }
     
     toggleFullScreen() {
         const readerElement = document.querySelector('.reader');
         if (!document.fullscreenElement) {
             readerElement.requestFullscreen();
+            this.fullscreen = true;
         } else {
             document.exitFullscreen();
+            this.fullscreen = false;
         }
     }
 
@@ -213,7 +265,7 @@ class ComicReader {
 
     updateUI() {
         this.prevButton = this.currentPage <= 0 || this.loading;
-        this.nextButton = this.currentPage >= this.pages.length - 1 || this.loading;
+        this.nextButton.disabled = this.currentPage >= this.pages.length - 1 || this.loading;
         this.updatePageInfo();
     }
 
