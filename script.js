@@ -147,6 +147,7 @@ class ComicReader {
             this.currentPage--;
             this.displayCurrentPage();
             this.updateUI();
+            this.updateProgressBar();
         }
     }
 
@@ -155,9 +156,18 @@ class ComicReader {
             this.currentPage++;
             this.displayCurrentPage();
             this.updateUI();
+            this.updateProgressBar();
         }
     }
 
+    updateProgressBar() {
+        const progressText = document.getElementById('progress-text');
+        const progress = document.getElementById('readProgress');
+        progress.value = ((this.currentPage + 1) / this.pages.length) * 100;
+        progressText.textContent = Math.round(progress.value) + '%'; // Display percentage as textprogress.value + '%';
+    }
+
+    
     handleKeyPress(event) {
         switch(event.key) {
             case 'ArrowLeft':
