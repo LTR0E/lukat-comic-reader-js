@@ -180,3 +180,22 @@ input[type=file]::file-selector-button:hover {
     }
 }
 
+#readingDirectionText {
+    color: white;
+    font-size: 1.2em;
+
+}
+
+#readingDirectionSelect {
+    padding: 8px;
+    border-radius: 4px;
+    background: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#readingDirectionSelect:hover {
+    background: rgb(44, 44, 73);
+}  

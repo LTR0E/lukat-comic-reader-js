@@ -22,6 +22,7 @@ class ComicReader {
         this.currentPage = 0;
         this.pages = [];
         this.loading = false;
+        this.readingDirection = 'ltr'; // Left-to-right by default
 
         this.fileInput = document.getElementById('fileInput');
         this.prevButton = document.querySelector('.prevButton');
@@ -29,6 +30,10 @@ class ComicReader {
         this.pageDisplay = document.getElementById('pageDisplay');
         this.pageInfo = document.getElementById('pageInfo');
         this.fullscreenButton = document.getElementById('fullscreenButton');
+
+        this.settingsButton = document.getElementById('settingsButton');
+        this.settingsMenu = document.getElementById('settingsMenu');
+        this.readingDirectionSelect = document.getElementById('readingDirectionSelect');
 
         this.setupEventListeners();
     }
@@ -39,6 +44,13 @@ class ComicReader {
         this.nextButton.addEventListener('click', () => this.nextPage());
         this.fullscreenButton.addEventListener('click', () => this.toggleFullScreen());
         document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+        
+        this.settingsButton.addEventListener('click', () => {
+            this.settingsMenu.style.display = (this.settingsMenu.style.display === 'none' ? 'block' : 'none');
+        });
+        this.readingDirectionSelect.addEventListener('change', (e) => {
+            this.readingDirection = e.target.value;
+        });
     }
     
     toggleFullScreen() {
@@ -143,20 +155,40 @@ class ComicReader {
     }
 
     previousPage() {
-        if (this.currentPage > 0) {
-            this.currentPage--;
-            this.displayCurrentPage();
-            this.updateUI();
-            this.updateProgressBar();
+        if (this.readingDirection === 'ltr') {
+            if (this.currentPage > 0) {
+                this.currentPage--;
+                this.displayCurrentPage();
+                this.updateUI();
+                this.updateProgressBar();
+            }
+        } else {
+            // RTL: 'previous' goes forward
+            if (this.currentPage < this.pages.length - 1) {
+                this.currentPage++;
+                this.displayCurrentPage();
+                this.updateUI();
+                this.updateProgressBar();
+            }
         }
     }
 
     nextPage() {
-        if (this.currentPage < this.pages.length - 1) {
-            this.currentPage++;
-            this.displayCurrentPage();
-            this.updateUI();
-            this.updateProgressBar();
+        if (this.readingDirection === 'ltr') {
+            if (this.currentPage < this.pages.length - 1) {
+                this.currentPage++;
+                this.displayCurrentPage();
+                this.updateUI();
+                this.updateProgressBar();
+            }
+        } else {
+            // RTL: 'next' goes backward
+            if (this.currentPage > 0) {
+                this.currentPage--;
+                this.displayCurrentPage();
+                this.updateUI();
+                this.updateProgressBar();
+            }
         }
     }
 
@@ -180,8 +212,8 @@ class ComicReader {
     }
 
     updateUI() {
-        this.prevButton.disabled = this.currentPage <= 0 || this.loading;
-        this.nextButton.disabled = this.currentPage >= this.pages.length - 1 || this.loading;
+        this.prevButton = this.currentPage <= 0 || this.loading;
+        this.nextButton = this.currentPage >= this.pages.length - 1 || this.loading;
         this.updatePageInfo();
     }
 
