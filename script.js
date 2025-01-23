@@ -26,7 +26,8 @@ class ComicReader {
         this.readingDirection = 'ltr'; // Left-to-right by default
         this.hideProgressTimeout = null;
         this.showProgressTimeout = null;
-        
+        this.pageInfoTimeout = null;
+
         this.fileInput = document.getElementById('fileInput');
         this.prevButton = document.querySelector('.prevButton');
         this.nextButton = document.querySelector('.nextButton');
@@ -275,16 +276,23 @@ class ComicReader {
     updatePageInfo() {
         if (this.pages.length > 0) {
             const currentPage = this.pages[this.currentPage];
-            // Display the current page number and filename and fade out after 4 seconds
-            setTimeout(() => {
+            
+            // Clear any existing timeout
+            clearTimeout(this.pageInfoTimeout);
+            
+            // Set new timeout for page info display
+            this.pageInfoTimeout = setTimeout(() => {
                 this.pageInfo.textContent = `Page ${currentPage.pageNum} - ${currentPage.filename}`;
                 this.pageInfo.style.opacity = 1;
                 this.pageInfo.style.transition = 'none';
-                setTimeout(() => {
+                
+                // Clear previous fade timeout and set new one
+                clearTimeout(this.pageInfoTimeout);
+                this.pageInfoTimeout = setTimeout(() => {
                     this.pageInfo.style.opacity = 0;
                     this.pageInfo.style.transition = 'opacity 1s ease-out';
-                }, 4000);
-            })
+                }, 3000);
+            });
         } else {
             this.pageInfo.textContent = this.loading ? 'Loading...' : 'No comic loaded';
         }
