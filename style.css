@@ -209,6 +209,8 @@ input[type=file]::file-selector-button:hover {
     background: rgba(0,0,0,0.5);
     border: none;
     overflow: hidden;
+    transition: opacity 0.5s ease-out;
+    opacity: 1;
 }
 
 #progress-text {
@@ -219,4 +221,17 @@ input[type=file]::file-selector-button:hover {
     color: white;
     font-size: 1.2em;
     opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+.order-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.fade-out {
+    opacity: 0 !important;
+    pointer-events: none;
 }

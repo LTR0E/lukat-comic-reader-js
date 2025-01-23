@@ -56,18 +56,18 @@ class ComicReader {
         });
 
         document.addEventListener('fullscreenchange', () => {
-            // Clear any previous timeout
             clearTimeout(this.hideProgressTimeout);
-    
+            const progress = document.getElementById('readProgress');
+            const text = document.getElementById('progress-text');
+        
             if (document.fullscreenElement) {
                 this.hideProgressTimeout = setTimeout(() => {
-                    document.getElementById('readProgress').style.display = 'none';
-                    document.getElementById('progress-text').style.display = 'none';
+                    progress.classList.add('fade-out');
+                    text.classList.add('fade-out');
                 }, 2000);
             } else {
-                // Show the progress bar when exiting fullscreen
-                document.getElementById('readProgress').style.display = 'block';
-                document.getElementById('progress-text').style.display = 'block';
+                progress.classList.remove('fade-out');
+                text.classList.remove('fade-out');
             }
         });
 
@@ -76,12 +76,15 @@ class ComicReader {
             if (document.fullscreenElement) {
                 clearTimeout(this.showProgressTimeout);
                 
-                document.getElementById('readProgress').style.display = 'block';
-                document.getElementById('progress-text').style.display = 'block';
+                const progress = document.getElementById('readProgress');
+                const text = document.getElementById('progress-text');
+                
+                progress.classList.remove('fade-out');
+                text.classList.remove('fade-out');
                 
                 this.showProgressTimeout = setTimeout(() => {
-                    document.getElementById('readProgress').style.display = 'none';
-                    document.getElementById('progress-text').style.display = 'none';
+                    progress.classList.add('fade-out');
+                    text.classList.add('fade-out');
                 }, 2000);
             }
         };

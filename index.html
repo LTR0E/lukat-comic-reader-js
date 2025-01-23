@@ -16,20 +16,21 @@
         <div class="controls">
             <input type="file" id="fileInput" accept=".cbr,.cbz">
 
-            <button id="settingsButton">Settings</button>
-            
-            <div id="settingsMenu" style="display: none;">
-            <label id="readingDirectionText">
-                Reading Direction:
-                <select id="readingDirectionSelect">
-                <option value="ltr">Left to Right</option>
-                <option value="rtl">Right to Left</option>
-                </select>
-            </label>
+            <div class="order-controls">
+                <button id="settingsButton"><img src="images/settings.png" width="24" height="24" style="filter: invert(1);"></button>
+                
+                <div id="settingsMenu" style="display: none;">
+                <label id="readingDirectionText">
+                    Reading Direction:
+                    <select id="readingDirectionSelect">
+                    <option value="ltr">Left to Right</option>
+                    <option value="rtl">Right to Left</option>
+                    </select>
+                </label>
+                </div>
+
+                <button id="fullscreenButton"><img src="images/expand.png" width="24" height="24" style="filter: invert(1);"></button>
             </div>
-
-            <button id="fullscreenButton"><img src="images/expand.png" width="24" height="24" style="filter: invert(1);"></button>
-
         </div>
 
         <div class="reader">
