@@ -105,8 +105,43 @@ class ComicReader {
             showProgressBriefly();
             }
         });
+
+        let startX = 0, startY = 0;
+        let threshold = 50; // Swipe threshold in px
+
+        const handleTouchStart = (e) => {
+            if (e.touches.length > 1) return; // Ignore multi-touch
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        };
+
+        const handleTouchEnd = (e) => {
+            if (!startX) return;
+            let endX = e.changedTouches[0].clientX;
+            let endY = e.changedTouches[0].clientY;
+
+            let distX = endX - startX;
+            let distY = endY - startY;
+
+            // Ensure horizontal movement is dominant
+            if (Math.abs(distX) > Math.abs(distY) && Math.abs(distX) > threshold) {
+                if (distX < 0) {
+                    // Swiped left
+                    this.nextPage();
+                } else {
+                    // Swiped right
+                    this.previousPage();
+                }
+            }
+            startX = 0;
+            startY = 0;
+        };
+
+        const readerElement = document.querySelector('.reader');
+        readerElement.addEventListener('touchstart', handleTouchStart, { passive: true });
+        readerElement.addEventListener('touchend', handleTouchEnd);
     }
-    
+
     toggleFullScreen() {
         const readerElement = document.querySelector('.reader');
         if (!document.fullscreenElement) {
