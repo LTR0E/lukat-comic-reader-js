@@ -33,6 +33,7 @@ class ComicReader {
         this.nextButton = document.querySelector('.nextButton');
         this.pageDisplay = document.getElementById('pageDisplay');
         this.pageInfo = document.getElementById('pageInfo');
+        this.showPageInfoCheckbox = document.getElementById('showPageInfoCheckbox');
         this.fullscreenButton = document.getElementById('fullscreenButton');
 
         this.settingsButton = document.getElementById('settingsButton');
@@ -54,6 +55,11 @@ class ComicReader {
         });
         this.readingDirectionSelect.addEventListener('change', (e) => {
             this.readingDirection = e.target.value;
+        });
+
+        this.showPageInfoCheckbox.addEventListener('change', (e) => {
+            const checked = e.target.checked;
+            this.pageInfo.style.display = checked ? 'block' : 'none';
         });
 
         document.addEventListener('fullscreenchange', () => {
@@ -330,6 +336,10 @@ class ComicReader {
             });
         } else {
             this.pageInfo.textContent = this.loading ? 'Loading...' : 'No comic loaded';
+        }
+        if (!this.showPageInfoCheckbox.checked) {
+            this.pageInfo.style.display = 'none';
+            return;
         }
     }
 }
