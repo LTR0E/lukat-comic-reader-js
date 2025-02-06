@@ -40,6 +40,7 @@ class ComicReader {
         this.settingsMenu = document.getElementById('settingsMenu');
         this.readingDirectionSelect = document.getElementById('readingDirectionSelect');
 
+        
         this.setupEventListeners();
     }
 

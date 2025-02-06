@@ -21,16 +21,20 @@
 
                 <div id="settingsMenu" style="display: none;">
 
-                <label id="readingDirectionText">
-                    Reading Direction:
-                    <select id="readingDirectionSelect">
-                    <option value="ltr">Left to Right</option>
-                    <option value="rtl">Right to Left</option>
-                    </select>
-                </label>
-                <label for="showPageInfoCheckbox" style="color: white;">Show Page Info</label>
-                <input type="checkbox" id="showPageInfoCheckbox" checked>
-                
+                    <label id="readingDirectionText">
+                        Reading Direction:
+                        <select id="readingDirectionSelect">
+                        <option value="ltr">Left to Right</option>
+                        <option value="rtl">Right to Left</option>
+                        </select>
+                    </label>
+                    <label id="showPageInfoText" for="showPageInfoCheckbox" style="color: white;">Show Page Info</label>
+                    <input type="checkbox" id="showPageInfoCheckbox" checked>
+                    
+                    <label id="displayMode" for="displayModeSelect" style="color: white;">Display Mode</label>
+
+
+
 
                 </div>
 
@@ -40,7 +44,7 @@
 
         <div class="reader">
             <button class="prevButton"></button>
-            <img id="pageDisplay" alt="Comic page">
+            <img id="pageDisplay" alt="Comic page" style="color: white;">
             <button class="nextButton"></button>
 
             <div class="page-info" id="pageInfo"></div>
