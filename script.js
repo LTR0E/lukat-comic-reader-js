@@ -163,24 +163,22 @@ class ComicReader {
     async handleFileSelect(event) {
         const file = event.target.files[0];
         if (!file) return;
-
+        
+        this.clearPreviousFileData();
         document.getElementById('errorMessage').style.display = 'none';
-        document.getElementById('loader').style.display = 'flex'; // Show loader
-
+        document.getElementById('loader').style.display = 'flex';
         this.loading = true;
         this.updateUI();
-
+    
         try {
             if (typeof Unarchiver === 'undefined') {
                 throw new Error('Unarchiver library not loaded');
             }
-
-
+    
             const archive = await Unarchiver.open(file);
-
+            
+            // Step 1: Collect and sort entries first (no loading yet)
             const pageEntries = [];
-
-            // First, collect all valid image entries with their filenames
             for (let entry of archive.entries) {
                 if (entry.is_file && this.isImageFile(entry.name)) {
                     pageEntries.push({
@@ -190,40 +188,21 @@ class ComicReader {
                     });
                 }
             }
-
+            
             // Sort entries by page number
             pageEntries.sort((a, b) => {
-                // First try to sort by page number
                 if (a.pageNum !== b.pageNum) {
                     return a.pageNum - b.pageNum;
                 }
-                // If page numbers are the same or not found, sort by filename
                 return a.filename.localeCompare(b.filename, undefined, {numeric: true, sensitivity: 'base'});
             });
-
-            // Now read the files in the correct order
-            this.pages = [];
-            let loadedCount = 0;
-            for (const pageEntry of pageEntries) {
-                const entryFile = await pageEntry.entry.read();
-                const url = URL.createObjectURL(entryFile);
-                this.pages.push({ url, filename: pageEntry.filename, pageNum: pageEntry.pageNum });
-                loadedCount++;
-                document.getElementById('progressInfo').textContent =
-                    `Loaded ${loadedCount} of ${pageEntries.length} pages...`;
-                // Let the UI update after each page
-                await new Promise(r => setTimeout(r, 0));
-            }
-
-            if (this.pages.length === 0) {
-                throw new Error('No valid images found in the archive');
-            }
             
-            document.getElementById('loader').style.display = 'none'; // Hide loader
-            this.loading = false;
-            this.currentPage = 0;
-            this.updateUI();
-            this.displayCurrentPage();
+            // Create placeholder array with correct length
+            this.pages = new Array(pageEntries.length).fill(null);
+            
+            // Step 2: Start loading images and update UI progressively
+            this.loadImagesProgressively(pageEntries);
+            
         } catch (error) {
             console.error('Error reading comic file:', error);
             showError(`Error reading comic file: ${error.message}`);
@@ -232,12 +211,92 @@ class ComicReader {
             this.currentPage = 0;
             this.loading = false;
             this.updateUI();
-        } finally {
-            this.loading = false;
-            this.updateUI();
         }
     }
 
+    async loadImagesProgressively(pageEntries) {
+        const total = pageEntries.length;
+        let loaded = 0;
+        
+        // Create an array of promises for loading all pages
+        const loadPromises = pageEntries.map(async (pageEntry, index) => {
+            try {
+                const entryFile = await pageEntry.entry.read();
+                const url = URL.createObjectURL(entryFile);
+                
+                // Store page at its correct index
+                this.pages[index] = { 
+                    url, 
+                    filename: pageEntry.filename, 
+                    pageNum: pageEntry.pageNum,
+                    loaded: true
+                };
+                
+                loaded++;
+                document.getElementById('progressInfo').textContent = 
+                    `Loaded ${loaded} of ${total} pages...`;
+                    
+                // If this is the first page and we haven't displayed anything yet, show it
+                if (this.currentPage === index || (this.currentPage === 0 && index === 0 && !this.pageDisplay.src)) {
+                    this.displayCurrentPage();
+                }
+                
+                // Update UI periodically, not after every single page
+                if (loaded % 5 === 0 || loaded === total) {
+                    this.updateUI();
+                    this.updateProgressBar();
+                }
+                
+                // Allow UI to update
+                await new Promise(r => setTimeout(r, 0));
+                
+            } catch (error) {
+                console.error(`Error loading page ${index}:`, error);
+                this.pages[index] = { 
+                    error: true, 
+                    filename: pageEntry.filename,
+                    pageNum: pageEntry.pageNum 
+                };
+            }
+        });
+        
+        // Wait for all pages to load
+        await Promise.all(loadPromises);
+        
+        // Complete loading
+        document.getElementById('loader').style.display = 'none';
+        this.loading = false;
+        this.updateUI();
+        
+        // Make sure we're showing a page
+        if (!this.pageDisplay.src && this.pages.length > 0) {
+            this.displayCurrentPage();
+        }
+    }
+
+    clearPreviousFileData() {
+        // Revoke all object URLs to prevent memory leaks
+        if (this.pages && this.pages.length > 0) {
+            for (const page of this.pages) {
+                if (page && page.url) {
+                    URL.revokeObjectURL(page.url);
+                }
+            }
+        }
+        
+        // Reset all state variables
+        this.pages = [];
+        this.currentPage = 0;
+        this.pageDisplay.src = '';
+        this.pageInfo.textContent = 'Loading...';
+        
+        // Reset progress
+        const progress = document.getElementById('readProgress');
+        const progressText = document.getElementById('progress-text');
+        progress.value = 0;
+        progressText.textContent = '0%';
+    }
+    
     isImageFile(filename) {
         const extensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
         return extensions.some(ext => filename.toLowerCase().endsWith(ext));
@@ -245,8 +304,21 @@ class ComicReader {
 
     displayCurrentPage() {
         if (this.pages.length > 0) {
-            this.pageDisplay.src = this.pages[this.currentPage].url;
-            this.updatePageInfo();
+            const currentPageData = this.pages[this.currentPage];
+            
+            if (currentPageData && currentPageData.loaded) {
+                // Page is loaded, display it
+                this.pageDisplay.src = currentPageData.url;
+                this.updatePageInfo();
+            } else if (currentPageData && currentPageData.error) {
+                // Page had an error loading
+                this.pageDisplay.src = '';
+                this.pageInfo.textContent = `Error loading page ${this.currentPage + 1}`;
+            } else {
+                // Page is still loading
+                this.pageDisplay.src = '';
+                this.pageInfo.textContent = 'Loading page...';
+            }
         } else {
             this.pageDisplay.src = '';
         }
@@ -310,9 +382,16 @@ class ComicReader {
     }
 
     updateUI() {
-        this.prevButton = this.currentPage <= 0 || this.loading;
+        this.prevButton.disabled = this.currentPage <= 0 || this.loading;
         this.nextButton.disabled = this.currentPage >= this.pages.length - 1 || this.loading;
         this.updatePageInfo();
+        
+        // Update progress info if we're still loading
+        if (this.loading) {
+            const loadedCount = this.pages.filter(p => p && (p.loaded || p.error)).length;
+            document.getElementById('progressInfo').textContent = 
+                `Loaded ${loadedCount} of ${this.pages.length} pages...`;
+        }
     }
 
     updatePageInfo() {
@@ -324,7 +403,15 @@ class ComicReader {
             
             // Set new timeout for page info display
             this.pageInfoTimeout = setTimeout(() => {
-                this.pageInfo.textContent = `Page ${currentPage.pageNum} - ${currentPage.filename}`;
+                // Check if currentPage exists and has pageNum property
+                if (currentPage && currentPage.pageNum !== undefined) {
+                    this.pageInfo.textContent = `Page ${currentPage.pageNum} - ${currentPage.filename}`;
+                } else if (this.loading) {
+                    this.pageInfo.textContent = `Loading page ${this.currentPage + 1}...`;
+                } else {
+                    this.pageInfo.textContent = `Page ${this.currentPage + 1} of ${this.pages.length}`;
+                }
+                
                 this.pageInfo.style.opacity = 1;
                 this.pageInfo.style.transition = 'none';
                 
